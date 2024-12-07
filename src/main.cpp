@@ -1,9 +1,6 @@
 #include <Arduino.h>
 
-
 #include "lvgl.h"
-
-#include "ui/ui.h"
 
 #define ENABLE_GxEPD2_GFX 0
 #include <GxEPD2_BW.h>
@@ -20,8 +17,6 @@ GxEPD2_BW<GxEPD2_579_GDEY0579T93, GxEPD2_579_GDEY0579T93::HEIGHT> display(GxEPD2
 static lv_display_t *lvDisplay;
 static uint8_t lvBuffer[2][LVBUF];
 
-
-
 void my_disp_flush(lv_display_t *disp, const lv_area_t *area, unsigned char *data)
 {
   int16_t width = area->x2 - area->x1 + 1;
@@ -29,7 +24,6 @@ void my_disp_flush(lv_display_t *disp, const lv_area_t *area, unsigned char *dat
   display.drawImage((uint8_t *)data + 8, area->x1, area->y1, width, height);
 
   lv_display_flush_ready(disp);
-
 }
 
 static uint32_t my_tick(void)
@@ -51,50 +45,40 @@ void epd_setup()
     Serial.println(display.pageHeight());
     delay(1000);
   }
-   //display.clearScreen(); return;
+  // display.clearScreen(); return;
   //  first update should be full refresh
   delay(1000);
 }
-
-
 
 void setup()
 {
 
   Serial.begin(115200);
 
-    // Initialization settings, executed once when the program starts
-    pinMode(7, OUTPUT);    // Set pin 7 to output mode
-    digitalWrite(7, HIGH); // Set pin 7 to high level to activate the screen power
+  // Initialization settings, executed once when the program starts
+  pinMode(7, OUTPUT);    // Set pin 7 to output mode
+  digitalWrite(7, HIGH); // Set pin 7 to high level to activate the screen power
 
-    epd_setup();
+  epd_setup();
 
-    lv_init();
+  lv_init();
 
-    lv_tick_set_cb(my_tick);
+  lv_tick_set_cb(my_tick);
 
-    lvDisplay = lv_display_create(SCR_WIDTH, SCR_HEIGHT);
-    lv_display_set_flush_cb(lvDisplay, my_disp_flush);
-    lv_display_set_buffers(lvDisplay, lvBuffer[0], lvBuffer[1], LVBUF, LV_DISPLAY_RENDER_MODE_PARTIAL);
+  lvDisplay = lv_display_create(SCR_WIDTH, SCR_HEIGHT);
+  lv_display_set_flush_cb(lvDisplay, my_disp_flush);
+  lv_display_set_buffers(lvDisplay, lvBuffer[0], lvBuffer[1], LVBUF, LV_DISPLAY_RENDER_MODE_PARTIAL);
 
-
-
-
-     lv_obj_t *label1 = lv_label_create(lv_scr_act());
-     lv_obj_set_align(label1, LV_ALIGN_CENTER);
-     lv_obj_set_width(label1, 400);
-     lv_label_set_text(label1, "@Makersfunduck CrowPanel ESP32 E-Paper 5.79-inch Arduino LVGL 9 port!");
-     lv_obj_set_style_text_align(label1, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-     lv_obj_set_style_text_font(label1, &lv_font_montserrat_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-
-
-
+  lv_obj_t *label1 = lv_label_create(lv_scr_act());
+  lv_obj_set_align(label1, LV_ALIGN_CENTER);
+  lv_obj_set_width(label1, 400);
+  lv_label_set_text(label1, "@Makersfunduck CrowPanel ESP32 E-Paper 5.79-inch Arduino LVGL 9 port!");
+  lv_obj_set_style_text_align(label1, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+  lv_obj_set_style_text_font(label1, &lv_font_montserrat_30, LV_PART_MAIN | LV_STATE_DEFAULT);
 }
 
 void loop()
 {
-      lv_timer_handler(); // Update the UI-
-      delay(100);
-      
+  lv_timer_handler(); // Update the UI-
+  delay(100);
 }
